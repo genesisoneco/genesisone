@@ -1,0 +1,15 @@
+{
+  "updatedAt": "2026-02-21T00:12:00+09:00",
+  "costMode": "lean",
+  "now": [
+    "Build tracking system scaffold (Ops Board)"
+  ],
+  "next": [
+    "Use this board for all future tasks"
+  ],
+  "blocked": [],
+  "done": [
+    "Set heartbeat model to ollama/qwen2.5:7b",
+    "Set heartbeat cadence to 1h"
+  ]
+}
