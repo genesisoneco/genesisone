@@ -1,15 +1,16 @@
 {
-  "updatedAt": "2026-02-21T00:12:00+09:00",
+  "updatedAt": "2026-02-21T00:53:00+09:00",
   "costMode": "lean",
   "now": [
-    "Build tracking system scaffold (Ops Board)"
+    "Upgraded dashboard with Live Status card"
   ],
   "next": [
-    "Use this board for all future tasks"
+    "Keep task state synced after each completed task"
   ],
   "blocked": [],
   "done": [
     "Set heartbeat model to ollama/qwen2.5:7b",
-    "Set heartbeat cadence to 1h"
+    "Set heartbeat cadence to 1h",
+    "Published dashboard on GitHub Pages"
   ]
 }

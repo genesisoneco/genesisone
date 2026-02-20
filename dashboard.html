@@ -13,36 +13,106 @@
     .card h2 { margin: 0 0 10px; font-size: 16px; }
     ul { margin: 0; padding-left: 18px; }
     li { margin: 6px 0; }
-    .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #1f2937; color: #cbd5e1; font-size: 12px; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #1f2937; color: #cbd5e1; font-size: 12px; margin-right: 6px; }
+    .ok { background: #14532d; color: #dcfce7; }
+    .idle { background: #3f3f46; color: #f4f4f5; }
     code { background: #111827; border: 1px solid #334155; border-radius: 6px; padding: 2px 6px; }
+    .row { margin-top: 16px; }
   </style>
 </head>
 <body>
   <h1>Genesis Ops Board 😼</h1>
-  <div class="muted">Visual status board. Source of truth: <code>STATUS.md</code> and <code>memory/todo.json</code>.</div>
+  <div class="muted">Live status + task board. Data source: <code>memory/todo.json</code>.</div>
 
   <div class="grid">
     <div class="card">
-      <h2>Now</h2>
-      <ul><li>Build tracking system scaffold (Ops Board)</li></ul>
+      <h2>Live Status</h2>
+      <p>
+        <span id="stateBadge" class="badge idle">Loading...</span>
+        <span id="costBadge" class="badge">Cost: -</span>
+      </p>
+      <ul>
+        <li><strong>Last update:</strong> <span id="lastUpdate">-</span></li>
+        <li><strong>Current task:</strong> <span id="currentTask">-</span></li>
+        <li><strong>Next task:</strong> <span id="nextTask">-</span></li>
+        <li><strong>Heartbeat:</strong> 1h on <code>ollama/qwen2.5:7b</code></li>
+      </ul>
     </div>
+
+    <div class="card">
+      <h2>Now</h2>
+      <ul id="nowList"><li>-</li></ul>
+    </div>
+
     <div class="card">
       <h2>Next</h2>
-      <ul><li>Use this board for all future tasks</li></ul>
+      <ul id="nextList"><li>-</li></ul>
     </div>
+
     <div class="card">
       <h2>Blocked</h2>
-      <ul><li>None</li></ul>
+      <ul id="blockedList"><li>None</li></ul>
     </div>
+
     <div class="card">
       <h2>Last Completed</h2>
-      <ul>
-        <li>Heartbeat model set to <code>ollama/qwen2.5:7b</code></li>
-        <li>Heartbeat cadence set to <code>1h</code></li>
-      </ul>
+      <ul id="doneList"><li>-</li></ul>
     </div>
   </div>
 
-  <p style="margin-top:16px;"><span class="badge">Cost mode: Lean</span></p>
+  <div class="row muted">Tip: refresh after updates if your browser cache is sticky.</div>
+
+  <script>
+    function renderList(id, items, fallback = 'None') {
+      const el = document.getElementById(id);
+      el.innerHTML = '';
+      const values = Array.isArray(items) && items.length ? items : [fallback];
+      values.forEach(v => {
+        const li = document.createElement('li');
+        li.textContent = v;
+        el.appendChild(li);
+      });
+    }
+
+    function formatTs(ts) {
+      const d = new Date(ts);
+      if (Number.isNaN(d.getTime())) return '-';
+      return d.toLocaleString();
+    }
+
+    function setStatus(ts) {
+      const badge = document.getElementById('stateBadge');
+      const d = new Date(ts);
+      const mins = Number.isNaN(d.getTime()) ? 9999 : (Date.now() - d.getTime()) / 60000;
+      const online = mins <= 120;
+      badge.textContent = online ? 'Online' : 'Idle';
+      badge.className = 'badge ' + (online ? 'ok' : 'idle');
+    }
+
+    async function loadBoard() {
+      try {
+        const res = await fetch('./memory/todo.json?ts=' + Date.now());
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+
+        renderList('nowList', data.now);
+        renderList('nextList', data.next);
+        renderList('blockedList', data.blocked, 'None');
+        renderList('doneList', data.done);
+
+        document.getElementById('currentTask').textContent = (data.now && data.now[0]) || '-';
+        document.getElementById('nextTask').textContent = (data.next && data.next[0]) || '-';
+        document.getElementById('lastUpdate').textContent = formatTs(data.updatedAt);
+        document.getElementById('costBadge').textContent = 'Cost: ' + ((data.costMode || 'lean').toUpperCase());
+        setStatus(data.updatedAt);
+      } catch (e) {
+        document.getElementById('stateBadge').textContent = 'No data';
+        document.getElementById('lastUpdate').textContent = 'Could not load memory/todo.json';
+      }
+    }
+
+    loadBoard();
+    setInterval(loadBoard, 60000);
+  </script>
 </body>
 </html>
