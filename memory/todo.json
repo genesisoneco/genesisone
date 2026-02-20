@@ -1,16 +1,18 @@
 {
-  "updatedAt": "2026-02-21T00:53:00+09:00",
+  "updatedAt": "2026-02-21T01:03:00+09:00",
   "costMode": "lean",
   "now": [
-    "Upgraded dashboard with Live Status card"
+    "Prepared first business model assets (plan + sales copy + 10 scripts)"
   ],
   "next": [
-    "Keep task state synced after each completed task"
+    "Pick storefront (Gumroad/Notion) and publish MVP listing",
+    "Create first 3 template files for Starter Pack"
   ],
   "blocked": [],
   "done": [
     "Set heartbeat model to ollama/qwen2.5:7b",
     "Set heartbeat cadence to 1h",
-    "Published dashboard on GitHub Pages"
+    "Published dashboard on GitHub Pages",
+    "Added live status card to dashboard"
   ]
 }
