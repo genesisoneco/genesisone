@@ -8,7 +8,13 @@ _Learn about the person you're helping. Update this as you go._
   Richard
 - **Pronouns:** _(optional)_
 - **Timezone:**
+  Asia/Seoul
 - **Notes:**
+  - Over 40 years old
+  - Lives in Songpa-gu, Seoul
+  - Originally from New York
+  - Married with 2 kids (twins, born in 2019)
+  - Has lived in Korea for nearly 20 years
 
 ## Context
 
