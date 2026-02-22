@@ -1,23 +1,86 @@
 {
-  "updatedAt": "2026-02-22T14:32:00+09:00",
+  "updatedAt": "2026-02-22T14:37:00+09:00",
   "costMode": "lean",
+  "mission": "Build and ship AI business assets fast, lean, and compounding.",
+  "kpis": {
+    "publishedAssets": 1,
+    "starterTemplates": 0,
+    "leads": 0,
+    "revenueUsd": 0,
+    "streakDays": 2
+  },
   "now": [
-    "Telegram channel is live and paired",
-    "Telegram DM access locked to allowlist (Richard only)"
+    {
+      "title": "Rotate Telegram bot token in BotFather",
+      "priority": "P0",
+      "impact": 5,
+      "speed": 5,
+      "confidence": 5,
+      "due": "today",
+      "owner": "Genesis"
+    },
+    {
+      "title": "Install/start gateway service for always-on Telegram availability",
+      "priority": "P0",
+      "impact": 5,
+      "speed": 4,
+      "confidence": 4,
+      "due": "today",
+      "owner": "Genesis"
+    }
   ],
   "next": [
-    "Rotate Telegram bot token in BotFather and update OpenClaw config",
-    "Install/start gateway service for always-on Telegram availability"
+    {
+      "title": "Pick storefront (Gumroad/Notion) and publish MVP listing",
+      "priority": "P1",
+      "impact": 5,
+      "speed": 3,
+      "confidence": 4,
+      "due": "this-week",
+      "owner": "Richard"
+    },
+    {
+      "title": "Create first 3 template files for Starter Pack",
+      "priority": "P1",
+      "impact": 5,
+      "speed": 3,
+      "confidence": 4,
+      "due": "this-week",
+      "owner": "Richard"
+    }
   ],
   "blocked": [],
+  "risks": [
+    {
+      "title": "Bot token was shared in chat history",
+      "severity": "high",
+      "owner": "Richard",
+      "nextStep": "Rotate token and replace in openclaw.json"
+    }
+  ],
   "done": [
     "Enabled Telegram plugin",
     "Added Telegram bot token to channel config",
     "Paired Telegram account successfully",
     "Set dmPolicy=allowlist with Richard user ID",
-    "Set heartbeat model to ollama/qwen2.5:7b",
-    "Set heartbeat cadence to 1h",
-    "Published dashboard on GitHub Pages",
-    "Added live status card to dashboard"
+    "Updated Ops Board to v2 schema"
+  ],
+  "activity": [
+    {
+      "time": "2026-02-22T14:28:00+09:00",
+      "text": "Telegram pairing completed"
+    },
+    {
+      "time": "2026-02-22T14:31:00+09:00",
+      "text": "Telegram DM policy switched to allowlist-only"
+    },
+    {
+      "time": "2026-02-22T14:35:00+09:00",
+      "text": "Ops board status data pushed to GitHub"
+    },
+    {
+      "time": "2026-02-22T14:37:00+09:00",
+      "text": "Started Ops Board v2 upgrade"
+    }
   ]
 }

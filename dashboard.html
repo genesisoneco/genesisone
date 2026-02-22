@@ -16,19 +16,34 @@
     .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #1f2937; color: #cbd5e1; font-size: 12px; margin-right: 6px; }
     .ok { background: #14532d; color: #dcfce7; }
     .idle { background: #3f3f46; color: #f4f4f5; }
+    .stale { background: #7f1d1d; color: #fee2e2; }
+    .p0 { background: #7f1d1d; color: #fee2e2; }
+    .p1 { background: #78350f; color: #fef3c7; }
+    .p2 { background: #1e3a8a; color: #dbeafe; }
+    .chip { display: inline-block; padding: 2px 7px; border-radius: 999px; background: #1f2937; font-size: 12px; margin-right: 6px; }
+    .risk-high { color: #fca5a5; }
+    .risk-medium { color: #fde68a; }
+    .risk-low { color: #86efac; }
     code { background: #111827; border: 1px solid #334155; border-radius: 6px; padding: 2px 6px; }
     .row { margin-top: 16px; }
+    .tight li { margin: 8px 0; }
   </style>
 </head>
 <body>
-  <h1>Genesis Ops Board 😼</h1>
+  <h1>Genesis Ops Board 😼 (v2)</h1>
   <div class="muted">Live status + task board. Data source: <code>memory/todo.json</code>.</div>
+
+  <div class="card" style="margin-bottom:12px;">
+    <h2>Mission</h2>
+    <div id="missionText">-</div>
+  </div>
 
   <div class="grid">
     <div class="card">
       <h2>Live Status</h2>
       <p>
         <span id="stateBadge" class="badge idle">Loading...</span>
+        <span id="ageBadge" class="badge">Data age: -</span>
         <span id="costBadge" class="badge">Cost: -</span>
       </p>
       <ul>
@@ -40,7 +55,12 @@
     </div>
 
     <div class="card">
-      <h2>Now</h2>
+      <h2>KPIs</h2>
+      <ul class="tight" id="kpiList"><li>-</li></ul>
+    </div>
+
+    <div class="card">
+      <h2>Now (Priority Queue)</h2>
       <ul id="nowList"><li>-</li></ul>
     </div>
 
@@ -50,29 +70,36 @@
     </div>
 
     <div class="card">
-      <h2>Blocked</h2>
-      <ul id="blockedList"><li>None</li></ul>
+      <h2>Risks & Blockers</h2>
+      <ul id="riskList"><li>None</li></ul>
+      <ul id="blockedList" style="margin-top:8px;"><li>None</li></ul>
+    </div>
+
+    <div class="card">
+      <h2>Activity Log</h2>
+      <ul id="activityList"><li>-</li></ul>
     </div>
 
     <div class="card">
       <h2>Last Completed</h2>
       <ul id="doneList"><li>-</li></ul>
     </div>
+
+    <div class="card">
+      <h2>Ops Shortcuts</h2>
+      <ul>
+        <li><code>openclaw status</code></li>
+        <li><code>openclaw gateway start</code></li>
+        <li><code>openclaw pairing list telegram</code></li>
+        <li><code>openclaw channels status</code></li>
+      </ul>
+    </div>
   </div>
 
-  <div class="row muted">Tip: refresh after updates if your browser cache is sticky.</div>
+  <div class="row muted">Tip: hard refresh if cache is sticky. Auto-refresh every 60s.</div>
 
   <script>
-    function renderList(id, items, fallback = 'None') {
-      const el = document.getElementById(id);
-      el.innerHTML = '';
-      const values = Array.isArray(items) && items.length ? items : [fallback];
-      values.forEach(v => {
-        const li = document.createElement('li');
-        li.textContent = v;
-        el.appendChild(li);
-      });
-    }
+    function byId(id) { return document.getElementById(id); }
 
     function formatTs(ts) {
       const d = new Date(ts);
@@ -80,13 +107,134 @@
       return d.toLocaleString();
     }
 
-    function setStatus(ts) {
-      const badge = document.getElementById('stateBadge');
+    function minutesSince(ts) {
       const d = new Date(ts);
-      const mins = Number.isNaN(d.getTime()) ? 9999 : (Date.now() - d.getTime()) / 60000;
+      if (Number.isNaN(d.getTime())) return 9999;
+      return Math.floor((Date.now() - d.getTime()) / 60000);
+    }
+
+    function score(task) {
+      if (!task || typeof task !== 'object') return 0;
+      return (Number(task.impact) || 0) * (Number(task.speed) || 0) * (Number(task.confidence) || 0);
+    }
+
+    function dueChip(due) {
+      if (!due) return '';
+      const text = String(due).toLowerCase();
+      if (text === 'today') return '<span class="chip p0">today</span>';
+      if (text === 'this-week') return '<span class="chip p1">this week</span>';
+      return '<span class="chip p2">later</span>';
+    }
+
+    function priorityClass(p) {
+      const v = String(p || '').toLowerCase();
+      if (v === 'p0') return 'p0';
+      if (v === 'p1') return 'p1';
+      return 'p2';
+    }
+
+    function renderTaskList(id, tasks) {
+      const el = byId(id);
+      el.innerHTML = '';
+      if (!Array.isArray(tasks) || !tasks.length) {
+        el.innerHTML = '<li>None</li>';
+        return;
+      }
+
+      const normalized = tasks.map(t => typeof t === 'string' ? { title: t, priority: 'P2' } : t)
+        .sort((a, b) => score(b) - score(a));
+
+      normalized.forEach(t => {
+        const li = document.createElement('li');
+        const pr = String(t.priority || 'P2').toUpperCase();
+        const cls = priorityClass(pr);
+        const s = score(t);
+        const owner = t.owner ? ` · ${t.owner}` : '';
+        li.innerHTML = `<span class="badge ${cls}">${pr}</span>${dueChip(t.due)} <strong>${t.title || '-'}</strong> <span class="muted">(score ${s}${owner})</span>`;
+        el.appendChild(li);
+      });
+    }
+
+    function renderSimpleList(id, items, fallback = 'None') {
+      const el = byId(id);
+      el.innerHTML = '';
+      const values = Array.isArray(items) && items.length ? items : [fallback];
+      values.forEach(v => {
+        const li = document.createElement('li');
+        li.textContent = typeof v === 'string' ? v : JSON.stringify(v);
+        el.appendChild(li);
+      });
+    }
+
+    function renderRisks(risks) {
+      const el = byId('riskList');
+      el.innerHTML = '';
+      if (!Array.isArray(risks) || !risks.length) {
+        el.innerHTML = '<li>Risks: None</li>';
+        return;
+      }
+      risks.forEach(r => {
+        const li = document.createElement('li');
+        const sev = String(r.severity || 'low').toLowerCase();
+        li.innerHTML = `<span class="risk-${sev}"><strong>${(r.title || '-')}</strong> (${sev})</span><br/><span class="muted">Owner: ${r.owner || '-'} · Next: ${r.nextStep || '-'}</span>`;
+        el.appendChild(li);
+      });
+    }
+
+    function renderKpis(kpis) {
+      const el = byId('kpiList');
+      el.innerHTML = '';
+      const data = kpis || {};
+      const lines = [
+        `Published assets: ${data.publishedAssets ?? 0}`,
+        `Starter templates: ${data.starterTemplates ?? 0}`,
+        `Leads: ${data.leads ?? 0}`,
+        `Revenue (USD): ${data.revenueUsd ?? 0}`,
+        `Streak days: ${data.streakDays ?? 0}`
+      ];
+      lines.forEach(t => {
+        const li = document.createElement('li');
+        li.textContent = t;
+        el.appendChild(li);
+      });
+    }
+
+    function renderActivity(activity) {
+      const el = byId('activityList');
+      el.innerHTML = '';
+      if (!Array.isArray(activity) || !activity.length) {
+        el.innerHTML = '<li>No recent activity</li>';
+        return;
+      }
+      activity.slice().reverse().slice(0, 8).forEach(a => {
+        const li = document.createElement('li');
+        if (typeof a === 'string') {
+          li.textContent = a;
+        } else {
+          li.innerHTML = `<strong>${formatTs(a.time)}</strong> — ${a.text || '-'}`;
+        }
+        el.appendChild(li);
+      });
+    }
+
+    function setStatus(ts) {
+      const state = byId('stateBadge');
+      const age = byId('ageBadge');
+      const mins = minutesSince(ts);
       const online = mins <= 120;
-      badge.textContent = online ? 'Online' : 'Idle';
-      badge.className = 'badge ' + (online ? 'ok' : 'idle');
+      const stale = mins > 240;
+
+      state.textContent = online ? 'Online' : 'Idle';
+      state.className = 'badge ' + (online ? 'ok' : 'idle');
+
+      age.textContent = `Data age: ${mins}m`;
+      age.className = 'badge ' + (stale ? 'stale' : '');
+    }
+
+    function firstTaskTitle(list) {
+      if (!Array.isArray(list) || !list.length) return '-';
+      const v = list[0];
+      return typeof v === 'string' ? v : (v.title || '-');
     }
 
     async function loadBoard() {
@@ -95,19 +243,23 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
 
-        renderList('nowList', data.now);
-        renderList('nextList', data.next);
-        renderList('blockedList', data.blocked, 'None');
-        renderList('doneList', data.done);
+        byId('missionText').textContent = data.mission || 'No mission set.';
+        renderKpis(data.kpis);
+        renderTaskList('nowList', data.now);
+        renderTaskList('nextList', data.next);
+        renderSimpleList('blockedList', data.blocked, 'Blocked: None');
+        renderSimpleList('doneList', data.done, 'None');
+        renderRisks(data.risks);
+        renderActivity(data.activity);
 
-        document.getElementById('currentTask').textContent = (data.now && data.now[0]) || '-';
-        document.getElementById('nextTask').textContent = (data.next && data.next[0]) || '-';
-        document.getElementById('lastUpdate').textContent = formatTs(data.updatedAt);
-        document.getElementById('costBadge').textContent = 'Cost: ' + ((data.costMode || 'lean').toUpperCase());
+        byId('currentTask').textContent = firstTaskTitle(data.now);
+        byId('nextTask').textContent = firstTaskTitle(data.next);
+        byId('lastUpdate').textContent = formatTs(data.updatedAt);
+        byId('costBadge').textContent = 'Cost: ' + ((data.costMode || 'lean').toUpperCase());
         setStatus(data.updatedAt);
       } catch (e) {
-        document.getElementById('stateBadge').textContent = 'No data';
-        document.getElementById('lastUpdate').textContent = 'Could not load memory/todo.json';
+        byId('stateBadge').textContent = 'No data';
+        byId('lastUpdate').textContent = 'Could not load memory/todo.json';
       }
     }
 
