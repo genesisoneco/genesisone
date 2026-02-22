@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Genesis Ops Board</title>
   <style>
-    body { font-family: Inter, Segoe UI, Arial, sans-serif; margin: 24px; background: #0b1220; color: #e5e7eb; }
-    h1 { margin: 0 0 6px; }
-    .muted { color: #94a3b8; margin-bottom: 18px; }
+    body { font-family: Inter, Segoe UI, Arial, sans-serif; margin: 24px; background: radial-gradient(circle at 20% 20%, #0f1f1b 0%, #071017 45%, #05080f 100%); color: #d1fae5; }
+    h1 { margin: 0 0 6px; letter-spacing: 0.5px; }
+    .muted { color: #86efac; margin-bottom: 18px; opacity: 0.8; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
-    .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 14px; }
+    .card { background: linear-gradient(180deg, rgba(6,20,24,0.9), rgba(6,15,20,0.95)); border: 1px solid #14532d; border-radius: 12px; padding: 14px; box-shadow: inset 0 0 0 1px rgba(16,185,129,0.08); }
     .card h2 { margin: 0 0 10px; font-size: 16px; }
     ul { margin: 0; padding-left: 18px; }
     li { margin: 6px 0; }
-    .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #1f2937; color: #cbd5e1; font-size: 12px; margin-right: 6px; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #0f172a; color: #a7f3d0; font-size: 12px; margin-right: 6px; border: 1px solid #14532d; }
     .ok { background: #14532d; color: #dcfce7; }
-    .idle { background: #3f3f46; color: #f4f4f5; }
+    .idle { background: #1f2937; color: #bbf7d0; }
     .stale { background: #7f1d1d; color: #fee2e2; }
     .pulse { animation: pulse 1.8s ease-in-out infinite; }
     .typingDots::after { content: '...'; display: inline-block; width: 16px; text-align: left; animation: dots 1.2s steps(4, end) infinite; }
@@ -45,11 +45,23 @@
     code { background: #111827; border: 1px solid #334155; border-radius: 6px; padding: 2px 6px; }
     .row { margin-top: 16px; }
     .tight li { margin: 8px 0; }
+    .missionControlBar { display: flex; gap: 8px; align-items: center; margin: 0 0 14px; }
+    .led { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+    .led.green { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+    .led.amber { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+    .led.red { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+    .mcTag { font-size: 11px; color: #86efac; border: 1px solid #14532d; padding: 2px 7px; border-radius: 999px; }
+
   </style>
 </head>
 <body>
-  <h1>Genesis Ops Board (v2)</h1>
-  <div class="muted">Live status + task board. Data source: <code>memory/todo.json</code>.</div>
+  <h1>Genesis Mission Control (v3)</h1>
+  <div class="missionControlBar">
+    <span class="led green"></span><span class="mcTag">SYSTEMS NOMINAL</span>
+    <span class="led amber"></span><span class="mcTag">EXECUTION</span>
+    <span class="led red"></span><span class="mcTag">RISK WATCH</span>
+  </div>
+  <div class="muted">Mission-control view. Data source: <code>memory/todo.json</code>.</div>
 
   <div class="card" style="margin-bottom:12px;">
     <h2>Mission</h2>
