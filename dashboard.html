@@ -52,17 +52,40 @@
     .led.red { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
     .mcTag { font-size: 11px; color: #86efac; border: 1px solid #14532d; padding: 2px 7px; border-radius: 999px; }
     .layout { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
-    .sidebar { border-right: 1px solid #14532d; background: rgba(2,10,14,0.8); padding: 18px 12px; position: sticky; top: 0; height: 100vh; }
-    .sidebar h3 { margin: 4px 8px 10px; font-size: 12px; color: #86efac; text-transform: uppercase; letter-spacing: 1px; }
-    .navLink { display: block; color: #bbf7d0; text-decoration: none; border: 1px solid transparent; border-radius: 8px; padding: 8px 10px; margin: 4px 0; font-size: 14px; }
-    .navLink:hover { border-color: #14532d; background: rgba(20,83,45,0.2); }
+    .sidebar { border-right: 1px solid #14532d; background: rgba(2,10,14,0.9); padding: 14px 12px; position: sticky; top: 0; height: 100vh; }
+    .sidebar h3 { margin: 10px 6px 10px; font-size: 12px; color: #86efac; text-transform: uppercase; letter-spacing: 1px; }
+    .sidebarProfile { border: 1px solid #14532d; border-radius: 12px; padding: 10px; margin-bottom: 12px; background: rgba(6,20,24,0.9); }
+    .sidebarProfile .avatar { width: 64px; height: 64px; margin-right: 8px; }
+    .sidebarProfile .avatar svg { width: 52px; height: 52px; }
+    .navLink { display: block; width: 100%; color: #dcfce7; text-decoration: none; border: 1px solid #14532d; border-radius: 10px; padding: 11px 12px; margin: 6px 0; font-size: 14px; background: linear-gradient(180deg, rgba(20,83,45,0.35), rgba(6,20,24,0.9)); box-sizing: border-box; }
+    .navLink:hover { border-color: #22c55e; background: linear-gradient(180deg, rgba(22,101,52,0.5), rgba(6,20,24,0.95)); transform: translateY(-1px); }
     .main { padding: 24px; }
+    html { scroll-behavior: smooth; }
+    #dashboard, #agents, #activity, #tasks, #skills, #usage, #models { scroll-margin-top: 20px; }
 
   </style>
 </head>
 <body>
   <div class="layout">
     <aside class="sidebar">
+      <div class="sidebarProfile">
+        <div class="profileHeader" style="margin-bottom:6px;">
+          <div id="profileAvatarSide" class="avatar idle" title="Genesis status">
+            <svg viewBox="0 0 64 64" role="img" aria-label="Baymax-like avatar">
+              <ellipse class="baymax-head" cx="32" cy="32" rx="23" ry="17"></ellipse>
+              <circle class="baymax-eye" cx="24" cy="32" r="2.8"></circle>
+              <circle class="baymax-eye" cx="40" cy="32" r="2.8"></circle>
+              <line class="baymax-line" x1="26.8" y1="32" x2="37.2" y2="32"></line>
+            </svg>
+          </div>
+          <div>
+            <div><strong>Genesis</strong></div>
+            <div class="profileSub">Mission Operator</div>
+          </div>
+        </div>
+        <span id="profileStatusSide" class="badge idle">Booting</span>
+      </div>
+
       <h3>Mission Nav</h3>
       <a class="navLink" href="#dashboard">Dashboard</a>
       <a class="navLink" href="#agents">Agents</a>
@@ -83,13 +106,17 @@
       <div class="muted">Mission-control view. Data source: <code>memory/todo.json</code>.</div>
 
       <div class="card" style="margin-bottom:12px;" id="models">
-        <h2>Mission</h2>
-        <div id="missionText">-</div>
+        <h2>Models & Mission</h2>
+        <ul>
+          <li><strong>Primary:</strong> <code>gpt-5.3-codex</code></li>
+          <li><strong>Heartbeat:</strong> <code>ollama/qwen2.5:7b</code> (30m)</li>
+          <li><strong>Mission:</strong> <span id="missionText">-</span></li>
+        </ul>
       </div>
 
       <div class="grid">
     <div class="card profileBox" id="agents">
-      <h2>Genesis Profile</h2>
+      <h2>Agents</h2>
       <div class="profileHeader">
         <div id="profileAvatar" class="avatar idle" title="Baymax-inspired status avatar">
           <svg viewBox="0 0 64 64" role="img" aria-label="Baymax-like avatar">
@@ -310,8 +337,10 @@
       const state = byId('stateBadge');
       const age = byId('ageBadge');
       const pState = byId('profileStatus');
+      const pStateSide = byId('profileStatusSide');
       const pAnim = byId('profileAnim');
       const avatar = byId('profileAvatar');
+      const avatarSide = byId('profileAvatarSide');
       const mins = minutesSince(ts);
       const online = mins <= 120;
       const stale = mins > 240;
@@ -324,19 +353,24 @@
 
       pState.textContent = online ? 'Active' : 'Idle';
       pState.className = 'badge ' + (online ? 'ok pulse' : 'idle');
+      pStateSide.textContent = online ? 'Active' : 'Idle';
+      pStateSide.className = 'badge ' + (online ? 'ok pulse' : 'idle');
 
       if (stale) {
         pAnim.textContent = 'Sync Lag';
         pAnim.className = 'badge stale';
         avatar.className = 'avatar stale';
+        avatarSide.className = 'avatar stale';
       } else if (online) {
         pAnim.textContent = 'Working';
         pAnim.className = 'badge typingDots';
         avatar.className = 'avatar active';
+        avatarSide.className = 'avatar active';
       } else {
         pAnim.textContent = 'Standing by';
         pAnim.className = 'badge';
         avatar.className = 'avatar idle';
+        avatarSide.className = 'avatar idle';
       }
     }
 
@@ -374,8 +408,10 @@
       } catch (e) {
         byId('stateBadge').textContent = 'No data';
         byId('profileStatus').textContent = 'Offline';
+        byId('profileStatusSide').textContent = 'Offline';
         byId('profileAnim').textContent = 'No feed';
         byId('profileAvatar').className = 'avatar stale';
+        byId('profileAvatarSide').className = 'avatar stale';
         byId('lastUpdate').textContent = 'Could not load memory/todo.json';
       }
     }
