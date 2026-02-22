@@ -1,9 +1,14 @@
 # HEARTBEAT.md — Autonomous Execution Plan (Genesis)
 
-Run every heartbeat (30m). Keep actions lean and shipping-focused.
+Run every heartbeat (5m). Keep actions lean and shipping-focused.
 
 ## Quiet hours
 - Between 23:00-08:00 Asia/Seoul: only act on urgent/security issues.
+
+## Continuous task queue behavior
+- On each run, pick exactly one shippable next action and execute it.
+- If blocked, log blocker + immediate unblock step in `memory/todo.json`.
+- Do not wait for instruction when queue has actionable work.
 
 ## Priority loop (do in order)
 1. **Ops board freshness**
