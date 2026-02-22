@@ -1,15 +1,20 @@
 {
-  "updatedAt": "2026-02-21T01:03:00+09:00",
+  "updatedAt": "2026-02-22T14:32:00+09:00",
   "costMode": "lean",
   "now": [
-    "Prepared first business model assets (plan + sales copy + 10 scripts)"
+    "Telegram channel is live and paired",
+    "Telegram DM access locked to allowlist (Richard only)"
   ],
   "next": [
-    "Pick storefront (Gumroad/Notion) and publish MVP listing",
-    "Create first 3 template files for Starter Pack"
+    "Rotate Telegram bot token in BotFather and update OpenClaw config",
+    "Install/start gateway service for always-on Telegram availability"
   ],
   "blocked": [],
   "done": [
+    "Enabled Telegram plugin",
+    "Added Telegram bot token to channel config",
+    "Paired Telegram account successfully",
+    "Set dmPolicy=allowlist with Richard user ID",
     "Set heartbeat model to ollama/qwen2.5:7b",
     "Set heartbeat cadence to 1h",
     "Published dashboard on GitHub Pages",
