@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Genesis Ops Board</title>
   <style>
-    body { font-family: Inter, Segoe UI, Arial, sans-serif; margin: 24px; background: radial-gradient(circle at 20% 20%, #0f1f1b 0%, #071017 45%, #05080f 100%); color: #d1fae5; }
+    body { font-family: Inter, Segoe UI, Arial, sans-serif; margin: 0; background: radial-gradient(circle at 20% 20%, #0f1f1b 0%, #071017 45%, #05080f 100%); color: #d1fae5; }
     h1 { margin: 0 0 6px; letter-spacing: 0.5px; }
     .muted { color: #86efac; margin-bottom: 18px; opacity: 0.8; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
@@ -51,25 +51,44 @@
     .led.amber { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
     .led.red { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
     .mcTag { font-size: 11px; color: #86efac; border: 1px solid #14532d; padding: 2px 7px; border-radius: 999px; }
+    .layout { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+    .sidebar { border-right: 1px solid #14532d; background: rgba(2,10,14,0.8); padding: 18px 12px; position: sticky; top: 0; height: 100vh; }
+    .sidebar h3 { margin: 4px 8px 10px; font-size: 12px; color: #86efac; text-transform: uppercase; letter-spacing: 1px; }
+    .navLink { display: block; color: #bbf7d0; text-decoration: none; border: 1px solid transparent; border-radius: 8px; padding: 8px 10px; margin: 4px 0; font-size: 14px; }
+    .navLink:hover { border-color: #14532d; background: rgba(20,83,45,0.2); }
+    .main { padding: 24px; }
 
   </style>
 </head>
 <body>
-  <h1>Genesis Mission Control (v3)</h1>
-  <div class="missionControlBar">
-    <span class="led green"></span><span class="mcTag">SYSTEMS NOMINAL</span>
-    <span class="led amber"></span><span class="mcTag">EXECUTION</span>
-    <span class="led red"></span><span class="mcTag">RISK WATCH</span>
-  </div>
-  <div class="muted">Mission-control view. Data source: <code>memory/todo.json</code>.</div>
+  <div class="layout">
+    <aside class="sidebar">
+      <h3>Mission Nav</h3>
+      <a class="navLink" href="#dashboard">Dashboard</a>
+      <a class="navLink" href="#agents">Agents</a>
+      <a class="navLink" href="#activity">Activity</a>
+      <a class="navLink" href="#tasks">Tasks</a>
+      <a class="navLink" href="#skills">Skills</a>
+      <a class="navLink" href="#usage">Usage</a>
+      <a class="navLink" href="#models">Models</a>
+    </aside>
 
-  <div class="card" style="margin-bottom:12px;">
-    <h2>Mission</h2>
-    <div id="missionText">-</div>
-  </div>
+    <main class="main" id="dashboard">
+      <h1>Genesis Mission Control (v3)</h1>
+      <div class="missionControlBar">
+        <span class="led green"></span><span class="mcTag">SYSTEMS NOMINAL</span>
+        <span class="led amber"></span><span class="mcTag">EXECUTION</span>
+        <span class="led red"></span><span class="mcTag">RISK WATCH</span>
+      </div>
+      <div class="muted">Mission-control view. Data source: <code>memory/todo.json</code>.</div>
 
-  <div class="grid">
-    <div class="card profileBox">
+      <div class="card" style="margin-bottom:12px;" id="models">
+        <h2>Mission</h2>
+        <div id="missionText">-</div>
+      </div>
+
+      <div class="grid">
+    <div class="card profileBox" id="agents">
       <h2>Genesis Profile</h2>
       <div class="profileHeader">
         <div id="profileAvatar" class="avatar idle" title="Baymax-inspired status avatar">
@@ -96,7 +115,7 @@
       </ul>
     </div>
 
-    <div class="card">
+    <div class="card" id="usage">
       <h2>Live Status</h2>
       <p>
         <span id="stateBadge" class="badge idle">Loading...</span>
@@ -116,7 +135,7 @@
       <ul class="tight" id="kpiList"><li>-</li></ul>
     </div>
 
-    <div class="card">
+    <div class="card" id="tasks">
       <h2>Now (Priority Queue)</h2>
       <ul id="nowList"><li>-</li></ul>
     </div>
@@ -132,7 +151,7 @@
       <ul id="blockedList" style="margin-top:8px;"><li>None</li></ul>
     </div>
 
-    <div class="card">
+    <div class="card" id="activity">
       <h2>Activity Log</h2>
       <ul id="activityList"><li>-</li></ul>
     </div>
@@ -140,6 +159,17 @@
     <div class="card">
       <h2>Last Completed</h2>
       <ul id="doneList"><li>-</li></ul>
+    </div>
+
+    <div class="card" id="skills">
+      <h2>Skills</h2>
+      <ul>
+        <li>sales-operator</li>
+        <li>product-packager</li>
+        <li>growth-analyst</li>
+        <li>content-engine</li>
+        <li>ops-custodian</li>
+      </ul>
     </div>
 
     <div class="card">
@@ -154,6 +184,8 @@
   </div>
 
   <div class="row muted">Tip: hard refresh if cache is sticky. Auto-refresh every 60s.</div>
+    </main>
+  </div>
 
   <script>
     function byId(id) { return document.getElementById(id); }
