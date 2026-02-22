@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-02-22T14:37:00+09:00",
+  "updatedAt": "2026-02-22T15:31:00+09:00",
   "costMode": "lean",
   "mission": "Build and ship AI business assets fast, lean, and compounding.",
   "kpis": {
-    "publishedAssets": 1,
-    "starterTemplates": 0,
+    "publishedAssets": 2,
+    "starterTemplates": 3,
     "leads": 0,
     "revenueUsd": 0,
     "streakDays": 2
@@ -31,22 +31,22 @@
   ],
   "next": [
     {
-      "title": "Pick storefront (Gumroad/Notion) and publish MVP listing",
+      "title": "Publish MVP listing to Gumroad/Notion storefront",
       "priority": "P1",
       "impact": 5,
       "speed": 3,
       "confidence": 4,
-      "due": "this-week",
+      "due": "today",
       "owner": "Richard"
     },
     {
-      "title": "Create first 3 template files for Starter Pack",
+      "title": "Bundle templates into ZIP and attach product thumbnail",
       "priority": "P1",
-      "impact": 5,
+      "impact": 4,
       "speed": 3,
       "confidence": 4,
-      "due": "this-week",
-      "owner": "Richard"
+      "due": "today",
+      "owner": "Genesis"
     }
   ],
   "blocked": [],
@@ -63,7 +63,9 @@
     "Added Telegram bot token to channel config",
     "Paired Telegram account successfully",
     "Set dmPolicy=allowlist with Richard user ID",
-    "Updated Ops Board to v2 schema"
+    "Updated Ops Board to v2 schema",
+    "Created MVP listing draft in products/starter-pack/MVP-LISTING.md",
+    "Created first 3 starter templates in products/starter-pack/"
   ],
   "activity": [
     {
@@ -81,6 +83,10 @@
     {
       "time": "2026-02-22T14:37:00+09:00",
       "text": "Started Ops Board v2 upgrade"
+    },
+    {
+      "time": "2026-02-22T15:31:00+09:00",
+      "text": "Built MVP listing + 3 starter templates"
     }
   ]
 }
