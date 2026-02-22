@@ -1,0 +1,13 @@
+{
+  "name": "genesis-google-access",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "auth": "node auth.mjs",
+    "test": "node test.mjs"
+  },
+  "dependencies": {
+    "@google-cloud/local-auth": "^3.0.1",
+    "googleapis": "^140.0.1"
+  }
+}
