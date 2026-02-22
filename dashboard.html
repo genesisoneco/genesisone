@@ -20,8 +20,8 @@
     .pulse { animation: pulse 1.8s ease-in-out infinite; }
     .typingDots::after { content: '...'; display: inline-block; width: 16px; text-align: left; animation: dots 1.2s steps(4, end) infinite; }
     .profileBox { background: linear-gradient(135deg, #111827 0%, #1f2937 100%); border: 1px solid #334155; }
-    .avatar { width: 58px; height: 58px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; background: #0f172a; border: 1px solid #334155; margin-right: 10px; overflow: hidden; }
-    .avatar svg { width: 46px; height: 46px; }
+    .avatar { width: 92px; height: 92px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; background: #0f172a; border: 1px solid #334155; margin-right: 12px; overflow: hidden; }
+    .avatar svg { width: 74px; height: 74px; }
     .baymax-head { fill: #f8fafc; }
     .baymax-eye { fill: #0f172a; }
     .baymax-line { stroke: #0f172a; stroke-width: 2; }
@@ -32,9 +32,9 @@
     .profileSub { color: #94a3b8; font-size: 13px; }
     @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.35);} 50% { box-shadow: 0 0 0 10px rgba(34,197,94,0);} }
     @keyframes dots { 0% { content: '.';} 33% { content: '..';} 66% { content: '...';} 100% { content: ''; } }
-    @keyframes baymaxBreath { 0%,100% { transform: scale(1);} 50% { transform: scale(1.05);} }
-    @keyframes baymaxIdle { 0%,100% { transform: translateY(0);} 50% { transform: translateY(1px);} }
-    @keyframes baymaxAlert { 0%,100% { transform: scale(1);} 50% { transform: scale(1.08);} }
+    @keyframes baymaxBreath { 0%,100% { transform: scale(1);} 50% { transform: scale(1.09);} }
+    @keyframes baymaxIdle { 0%,100% { transform: translateY(0);} 50% { transform: translateY(3px);} }
+    @keyframes baymaxAlert { 0%,100% { transform: scale(1);} 50% { transform: scale(1.14);} }
     .p0 { background: #7f1d1d; color: #fee2e2; }
     .p1 { background: #78350f; color: #fef3c7; }
     .p2 { background: #1e3a8a; color: #dbeafe; }
@@ -48,7 +48,7 @@
   </style>
 </head>
 <body>
-  <h1>Genesis Ops Board 😼 (v2)</h1>
+  <h1>Genesis Ops Board (v2)</h1>
   <div class="muted">Live status + task board. Data source: <code>memory/todo.json</code>.</div>
 
   <div class="card" style="margin-bottom:12px;">
